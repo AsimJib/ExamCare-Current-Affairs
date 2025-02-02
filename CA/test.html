@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch M3U8 Player</title>
+    
+    <!-- Video.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.0.4/video-js.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Responsive Video Container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            padding-top: 56.25%; /* Aspect ratio 16:9 */
+        }
+
+        /* Make Video Fit in Container */
+        .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Add Thumbnail */
+        .vjs-poster {
+            background-image: url('https://i.ibb.co/0yPnkMdN/IMG-20241211-WA0013-11zon.webp'); /* Replace with your thumbnail image URL */
+            background-size: cover;
+        }
+
+        /* Popup Message */
+        .popup {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📺 Twitch M3U8 Player (Ad Skip + Click to Pause/Play)</h2>
+    
+    <div class="video-container">
+        <video id="twitchPlayer" class="video-js vjs-default-skin" controls preload="auto" poster="https://i.ibb.co/0yPnkMdN/IMG-20241211-WA0013-11zon.webp">
+            <source src="https://euw13-0.playlist.ttvnw.net/v1/playlist/Cs8EKX3QRSG_WHhLeEVchKy3syQyzz9D2Cc8xq59wvLOAZabtt95nN2HmSqdm5FVRibUUHzfd2p2rM-k9bjcXoheZnaRgqCHxBGl-A6l36kn5oivh3MKOhnzeS7FxWTXDP9lClLQwLNFyDqnonTPeUFosLgOu6cQcthflcHc2Aw4eKc0xHcfg8QeEMbUOqPt9_DVq3akUJTOMhx8YntELxvC6oTRkZFX1dMaBm3beabRo2vV0B48FGNaIAMu4NQV87_TzRvNk-4kS6SXM1Fc25o4TPG7HBPIY8t6B2ICDgqhYS3PKdN5RNslhowQuDfe7pMlRJ14n6K-DrnAsq8OKUWLQFMU3yT7IR7-ahCs_r_RiQZBOgXJ876ds_4wnaa1AxBa8ns1nbRP9_80qlRYhV70NoI2ryiwGVYDEuNKJIx4twZes0T15dAaOPsp3KNG5Z_e3FWTvU3TSPe0T9gSuYNYZ55P08a7tTvR8WsJLNFB9bGogU1zD6CuCL67LgGwM1RIrXHS8XtWL5LyLZUULToVdBoI2MVQV0VzkDC0TFIrHCBvnUPBY9PkYnG8yowsQf6YrJFEG7In6tg0JtYTtkReleRF0qPOHqrSnbmtfF4efruw7BknQ1ydOQLHedV2pcAELFcJsScrQ0peSLHZytnifHBqi-HNiMw3rtnnV2k4cEHtaM3IqySBPYf50PpMNk23KPgLOJEdojn2O-7vPrgIl8MLz6l3WdQazfKer9obF8Nlr-jUePYAnYf7Qm0O60YbJ10XK2QqXPYVqdbpXbUqGgz76bm9NjLdZsknulMgASoJZXUtd2VzdC0yML4L.m3u8" type="application/x-mpegURL">
+        </video>
+        <div id="adPopup" class="popup">An ad is currently playing. Please wait...</div>
+    </div>
+
+    <!-- Video.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.0.4/video.min.js"></script>
+
+    <script>
+        var player = videojs('twitchPlayer', {
+            html5: {
+                hls: {
+                    overrideNative: true
+                }
+            }
+        });
+
+        // Click on the video to Play/Pause
+        player.on('click', function () {
+            if (player.paused()) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        });
+
+        // Show popup message during ad segments
+        var adPopup = document.getElementById('adPopup');
+        player.on('timeupdate', function () {
+            var currentTime = player.currentTime();
+            var duration = player.duration();
+
+            if (player.currentSrc().includes('ad') || (duration < 60 && currentTime < 5)) {
+                adPopup.style.display = 'block';
+            } else {
+                adPopup.style.display = 'none';
+            }
+        });
+
+        // Debugging: Log when the source changes
+        player.on('loadstart', function () {
+            console.log("🔄 Stream Loaded: " + player.currentSrc());
+        });
+    </script>
+
+</body>
+</html>

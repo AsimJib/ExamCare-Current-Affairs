@@ -41,31 +41,25 @@
             background-size: cover;
         }
 
-        /* Popup Message */
-        .popup {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            color: white;
-            font-size: 18px;
-            text-align: center;
+        /* Prevent long press highlight on images */
+        img, .vjs-poster {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
         }
     </style>
 </head>
 <body>
 
-    <h2>📺 Twitch M3U8 Player (Ad Skip + Click to Pause/Play)</h2>
+    <h2>📺 Twitch M3U8 Player (Click to Pause/Play)</h2>
     
     <div class="video-container">
         <video id="twitchPlayer" class="video-js vjs-default-skin" controls preload="auto" poster="https://i.ibb.co/0yPnkMdN/IMG-20241211-WA0013-11zon.webp">
             <source src="https://video-weaver.ams03.hls.ttvnw.net/v1/playlist/CuEE7PlcEdeNfJ_8OF3-cnaQtAM62ZoffzS53n2XzMiMsSdcscSGO7Wow3vC7VQZRZ3m4a5yP_5RRhc1B4y7McGCzL1fB-HE-EtJaehFtDJyUlC5dMTniWls4_IuE73gnqTH42IwIMudxt1nRxG5qATovYOp3EkozBMAVhRLzRODoCGT5bsLI5HpVbnz67R_vIatFSVlPsynTkVwizB9P_MEz8l3jZzrQ_DOTsai9J81d8OslCZnOtqkhHg_1fdDEnRyYLOgOW8VzVQP725a9uboBnp8P_wsTk-2PMJ8s-szU_ZLvgj2nI60ZvCAn8X7dHQJmcBQZ_pxIkxWD6vpZJiZf-W6cvEWdoixLJsAPPUg5n5SmNp5xD5bO_wG0XU2HWR4EtZzo7sfIQGBaCJ0E5AbbwuUsTdmPc01ai0wzXz3YOkHi9fXpGSKRdQg5LC_xKBGl0gxzqKWBGw8Y5B_Sl9Z-kxckpSBMAliHC1b__k_V3DM2SY55RQDQonKSy4oymxydYDDwxi7u8eD4KyGR9h7L9f7jkabH-JhSSfCXn-wU4_acMPDRY3O0BMePzyXL1BgFOWfZF4CDum3FQ4KuHJobnzNnEBEWsqLuAxTDU8GmXbHjHxcGS-b15-sY-0juBXgGsZYA2i_XCITqSwTQ8H1q3AfQz_YhZqxCaMXrh2UGaXW92BYi8ew4ArX737r3DvtVJiWshG8woYzwEJqjK6d0-l0pPHiT9XhUHqQZdBW41eQ7ccke2QDlhpMckA0DoxyGazBJngcV91wG0ilHnhw1gs-OQar4uGiyhkPhFbILGjTGgxNn3d-qG_e-ZuvM1ggASoJZXUtd2VzdC0yML8L.m3u8" type="application/x-mpegURL">
         </video>
-        <div id="adPopup" class="popup">An ad is currently playing. Please wait...</div>
     </div>
 
     <!-- Video.js Library -->
@@ -86,19 +80,6 @@
                 player.play();
             } else {
                 player.pause();
-            }
-        });
-
-        // Show popup message during ad segments
-        var adPopup = document.getElementById('adPopup');
-        player.on('timeupdate', function () {
-            var currentTime = player.currentTime();
-            var duration = player.duration();
-
-            if (player.currentSrc().includes('ad') || (duration < 60 && currentTime < 5)) {
-                adPopup.style.display = 'block';
-            } else {
-                adPopup.style.display = 'none';
             }
         });
 
